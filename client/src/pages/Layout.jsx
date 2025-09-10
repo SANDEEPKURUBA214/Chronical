@@ -3,13 +3,15 @@ import { assets } from '../assets/assets';
 import {Outlet, useNavigate} from "react-router-dom"
 import Sidebar from '../components/Sidebar';
 
+
 const Layout = () => {
+    const navigate = useNavigate()
+    const logout = async () => {
 
-    const navigate   = useNavigate()
-
-    const logout = ()=>{
-        navigate('/login')
+      navigate("/login");
     }
+
+
 
   return (
     <>

@@ -9,7 +9,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const { data } = await axios.get("/api/auth/profile");
+      const { data } = await axios.get("http://localhost:5000/api/user/me", { withCredentials: true })
       if (data.success) {
         setProfile({
           ...data.user,

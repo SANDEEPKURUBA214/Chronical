@@ -287,5 +287,3 @@ export const generateContent = async (req, res) => {
 };
 
 
-
-

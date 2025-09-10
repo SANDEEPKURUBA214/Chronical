@@ -13,7 +13,7 @@ const ListBlog = () => {
 
     const fetchBlogs = async () =>{
       try{
-        const { data } = await axios.get('/api/admin/allblogs');
+        const { data } = await axios.get('http://localhost:5000/api/admin/allblogs');
 
         if(data.success){
           setBlogs(data.blogs)

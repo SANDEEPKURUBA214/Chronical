@@ -18,10 +18,10 @@ const Dashboard = () => {
 
 const fetchDashboard = async () => {
   try {
-    const { data } = await axios.get("/api/admin/dashboard");
+    const { data } = await axios.get("http://localhost:5000/api/admin/dashboard");
     console.log("dashboard API response:", data); // 👀 check here
     if (data.success) {
-  setDashBoardData({
+    setDashBoardData({
     blogs: data.blogs,
     comments: data.comments,
     drafts: data.drafts,
@@ -51,7 +51,15 @@ const fetchDashboard = async () => {
             <p className='text-gray-400 font-light'>Blogs</p>
           </div>
         </div>
-
+{/* 
+        <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded
+        shadow cursor-pointer hover:scale-105 transition-all'>
+          <img src={assets.dashboard_icon_2} alt=""/>
+          <div>
+            <p className='text-xl font-semibold text-gray-600'>{dashBoardData.comments}</p>
+            <p className='text-gray-400 font-light'>Comments</p>
+          </div>
+        </div> */}
 
         <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded
         shadow cursor-pointer hover:scale-105 transition-all'>
