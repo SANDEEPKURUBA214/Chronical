@@ -14,30 +14,31 @@ export default function Login() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { Notification, showNotification } = useNotification();
-  const { setToken, setUser } = useAppContext();
-
 
   const handleSubmit = async (e) => {
-       e.preventDefault();   // prevent form reload
-       try {
-         setLoading(true);
-         const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`,
-           { email, password },
-           { withCredentials: true }
-         );
-         login(res.data);
-         if (res.data.token) {
-             localStorage.setItem("token", res.data.token);
-         }
+      e.preventDefault();   // prevent form reload
+      try {
+        setLoading(true);
+        const res = await axios.post(
+          "http://localhost:5000/api/auth/login",
+          { email, password },
+          { withCredentials: true }
+        );
+        login(res.data);
+        if (res.data.token) {
+            localStorage.setItem("token", res.data.token);
+        }
 
-         showNotification("Login successful!", "success");
-         navigate("/home");
-       } catch (err) {
-         showNotification(err.response?.data?.message || "Login failed", "error");
-       }
-       setLoading(false);
-     };
+        showNotification("Login successful!", "success");
+        navigate("/home");
+      } catch (err) {
+        showNotification(err.response?.data?.message || "Login failed", "error");
+      }
+      setLoading(false);
+    };
 
+
+  if (loading) return <CircularProgress sx={{ mt: 10 }} />;
 
   return (
     <div className='flex items-center justify-center h-screen'>

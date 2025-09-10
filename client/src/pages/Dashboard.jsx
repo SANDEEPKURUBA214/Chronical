@@ -52,6 +52,7 @@ const fetchDashboard = async () => {
           </div>
         </div>
 
+
         <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded
         shadow cursor-pointer hover:scale-105 transition-all'>
           <img src={assets.dashboard_icon_3} alt=""/>

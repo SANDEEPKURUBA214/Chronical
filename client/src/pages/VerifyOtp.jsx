@@ -40,7 +40,7 @@ export default function VerifyOtp() {
     }
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`, { email, otp: finalOtp });
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`,{email, otp: finalOtp });
       showNotification("Account verified successfully! Please login.");
       navigate("/login");
     } catch (err) {

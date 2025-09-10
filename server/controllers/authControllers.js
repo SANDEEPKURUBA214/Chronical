@@ -91,13 +91,6 @@ export const loginUser = async (req, res) => {
     //  Debug logs
     if (await user.matchPassword(password)) {
       const token = generateToken(user._id, user.role);
-      res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "lax", // Use "none" and secure: true if using HTTPS
-        secure: false,   // Set to true if using HTTPS
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-      });
-
       res.json({
         _id: user._id,
         name: user.name,

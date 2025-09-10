@@ -6,7 +6,6 @@ import connectDB from "./configs/DB.js";
 import authRoutes from "./routes/authRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -14,22 +13,21 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
 
-app.use(cors({
-  origin: [
-    "http://localhost:5173",      // local dev
-    "http://localhost:3000",      // local dev
-    "https://chronical-tau.vercel.app" // your deployed frontend
-  ],
-  credentials: true
-}));
+const app = express();
 
 // Connect to MongoDB
 connectDB();
 
 // Middleware
+app.use(cors({
+  origin: [
+    "http://localhost:5173", 
+    "http://localhost:3000", 
 
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 
