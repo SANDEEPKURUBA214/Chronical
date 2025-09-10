@@ -16,18 +16,20 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+app.use(cors({
+  origin: [
+    "http://localhost:5173",      // local dev
+    "http://localhost:3000",      // local dev
+    "https://chronical-tau.vercel.app" // your deployed frontend
+  ],
+  credentials: true
+}));
+
 // Connect to MongoDB
 connectDB();
 
 // Middleware
-app.use(cors({
-  origin: [
-    "http://localhost:5173", 
-    "http://localhost:3000", 
-    "https://chronical.onrender.com" // Add your frontend deployed URL
-  ],
-  credentials: true,
-}));
+
 app.use(express.json());
 app.use(cookieParser());
 
