@@ -41,8 +41,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/blog", blogRouter);
 app.use("/api/admin", adminRoutes);
-app.use("/api/user", authRoutes); // 👈 mount user routes
-app.use("/api/upload", authRoutes);
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const PORT = process.env.PORT || 5000;
