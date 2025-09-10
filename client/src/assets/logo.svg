@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="60" viewBox="0 0 220 60" fill="none">
+  <!-- Icon -->
+  <rect x="10" y="10" width="40" height="40" rx="8" fill="#4F46E5"></rect>
+  <path d="M30 20L38 40H22L30 20Z" fill="white"></path>
+  
+  <!-- Text -->
+  <text x="60" y="38" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="600" fill="black">
+    Chronical
+  </text>
+</svg>
