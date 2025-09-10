@@ -1,0 +1,146 @@
+import {React, useEffect, useState } from "react";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
+
+const Profile = () => {
+  const { axios } = useAppContext();
+  const [profile, setProfile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const fetchProfile = async () => {
+    try {
+      const { data } = await axios.get("/api/auth/profile");
+      if (data.success) {
+        setProfile({
+          ...data.user,
+          admin: data.admin || null,
+        });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      setUploading(true);
+
+      // 1. Get signature from backend
+      const { data } = await axios.get("/api/auth/upload-signature");
+
+      // 2. Upload to ImageKit
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("fileName", file.name);
+      formData.append("publicKey", import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY);
+      formData.append("signature", data.signature);
+      formData.append("expire", data.expire);
+      formData.append("token", data.token);
+
+      const uploadRes = await fetch(
+        "https://upload.imagekit.io/api/v1/files/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const uploadData = await uploadRes.json();
+      if (!uploadData.url) throw new Error("Image upload failed");
+
+      // 3. Save URL to backend
+      await axios.put("/api/auth/profile-photo", { photo: uploadData.url });
+
+      toast.success("Profile photo updated!");
+
+      // 4. Update UI
+      setProfile((prev) => ({ ...prev, photo: uploadData.url }));
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  if (!profile) {
+    return (
+      <p className="text-center text-gray-500 mt-10">Loading profile...</p>
+    );
+  }
+
+  return (
+    //<div className="w-full flex justify-center bg-blue-50/50 min-h-screen">
+    <div className="w-full flex px-80 py-20 items-start bg-blue-50/50 min-h-screen">
+      <div className="bg-white shadow-xl rounded-2xl p-8 max-w-md w-full">
+        {/* Profile Photo */}
+        <div className="flex flex-col items-center">
+          {profile.photo ? (
+            <img
+              src={profile.photo}
+              alt="Profile"
+              className="w-24 h-24 rounded-full object-cover border-2 border-primary"
+            />
+          ) : (
+            <div className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary">
+              {profile.name?.charAt(0).toUpperCase()}
+            </div>
+          )}
+
+          {/* Upload Button */}
+          <label className="mt-2 bg-primary text-white text-xs px-3 py-1 rounded cursor-pointer">
+            {uploading ? "Uploading..." : "Edit Photo"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploading}
+              onChange={handleFileChange}
+            />
+          </label>
+        </div>
+
+        {/* Profile Info */}
+        <div className="mt-6 space-y-4 text-sm text-gray-700">
+          <div className="flex justify-between border-b pb-2">
+            <span className="font-medium">Name:</span>
+            <span>{profile.name}</span>
+          </div>
+
+          <div className="flex justify-between border-b pb-2">
+            <span className="font-medium">Email:</span>
+            <span>{profile.email}</span>
+          </div>
+
+          <div className="flex justify-between border-b pb-2">
+            <span className="font-medium">Joined:</span>
+            <span>{new Date(profile.createdAt).toDateString()}</span>
+          </div>
+
+          <div className="flex justify-between">
+            <span className="font-medium">Role:</span>
+            {profile.role === "admin" ? (
+              <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-xs">
+                Admin
+              </span>
+            ) : (
+              <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-xs">
+                User/Publisher
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
