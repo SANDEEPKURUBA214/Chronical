@@ -16,39 +16,36 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Connect to DB
+// Connect to MongoDB
 connectDB();
 
 // Middleware
 app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"],
+  origin: [
+    "http://localhost:5173", 
+    "http://localhost:3000", 
+    "https://chronical.onrender.com" // Add your frontend deployed URL
+  ],
   credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
 
-// Serve uploads folder
+// Serve uploads folder (for images/files)
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// API Routes (defined BEFORE SPA fallback)
+// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/blog", blogRouter);
 app.use("/api/admin", adminRoutes);
-app.use("/api/user", authRoutes); 
-app.use("/api/upload", authRoutes); 
+app.use("/api/user", authRoutes);
+app.use("/api/upload", authRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.send("API is working");
 });
 
-// Serve React build
-app.use(express.static(path.join(__dirname, "build")));
-
-// SPA fallback (regex version)
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
 
 // Start server
 const PORT = process.env.PORT || 5000;
