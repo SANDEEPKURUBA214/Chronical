@@ -21,21 +21,15 @@ connectDB();
 
 // --------------------- CORS ---------------------
 // Allowed origins: local dev + multiple Vercel frontends
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : [
-      "chronical-roan.vercel.app",
-      "http://localhost:5173",
-      "http://localhost:3000"
-      
-,
-    ];
+const allowedOrigins = [
+  "https://chronical-gjy2.vercel.app", // ✅ your actual Vercel frontend
+  "http://localhost:5173" // optional for local dev
+];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like Postman)
-      if (!origin) return callback(null, true);
+      if (!origin) return callback(null, true); // allow tools like Postman
       if (allowedOrigins.indexOf(origin) === -1) {
         const msg = `CORS policy does not allow access from ${origin}`;
         return callback(new Error(msg), false);
@@ -45,6 +39,21 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // allow tools like Postman
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = `CORS policy does not allow access from ${origin}`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
+
 
 // ------------------- Middleware -------------------
 app.use(express.json());
