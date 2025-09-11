@@ -20,7 +20,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
               className="px-3 py-1 bg-blue-500 text-white rounded"
               onClick={async () => {
                 try {
-                  await axios.delete(`/api/admin/blogs/${blogId}`);
+                  await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/admin/blogs/${blogId}`);
                   toast.dismiss(t.id);
                   toast.success("Blog deleted!");
                   await fetchBlogs();
@@ -46,7 +46,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
 
   const togglePublish = async () => {
     try {
-      const { data } = await axios.post("http://localhost:5000/api/admin/toggle-publish", {
+      const { data } = await axios.post( `${import.meta.env.VITE_BASE_URL}/api/admin/toggle-publish`, {
         id: blog._id,
       });
       if (data.success) {

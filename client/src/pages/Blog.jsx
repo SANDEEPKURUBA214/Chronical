@@ -22,7 +22,7 @@ const Blog = () => {
 
   const fetchBlogData = async ()=>{
     try{
-      const {data} = await axios.get(`http://localhost:5000/api/blog/blog/${id}`)
+      const {data} = await axios.get( `${import.meta.env.VITE_BASE_URL}/api/blog/blog/${id}`)
 
       data.success ? setData(data.blog) : toast.error(data.message)
       // console.log("Fetched comments:", data.comments);
@@ -34,7 +34,7 @@ const Blog = () => {
 
   const fetchComments = async () => {
   try {
-    const { data } = await axios.get(`http://localhost:5000/api/blog/comments/${id}`);
+    const { data } = await axios.get( `${import.meta.env.VITE_BASE_URL}/blog/comments/${id}`);
     if (data.success) {
       setComments(data.comments); // 👈 make sure this is called
     } else {
@@ -49,7 +49,7 @@ const Blog = () => {
   const addComment = async (e) => {
   e.preventDefault();
   try {
-    const { data } = await axios.post("http://localhost:5000/api/blog/comments", {
+    const { data } = await axios.post( `${import.meta.env.VITE_BASE_URL}/api/blog/comments`, {
       blogId: id,
       content,
     });
@@ -67,7 +67,7 @@ const Blog = () => {
 
   const handleDelete = async (commentId) => {
     try {
-      const { data } = await await axios.delete("http://localhost:5000/api/admin/delete-comment", {
+      const { data } = await await axios.delete( `${import.meta.env.VITE_BASE_URL}/api/admin/delete-comment`, {
           data: { id: commentId }
         });
 

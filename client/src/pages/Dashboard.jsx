@@ -18,7 +18,7 @@ const Dashboard = () => {
 
 const fetchDashboard = async () => {
   try {
-    const { data } = await axios.get("http://localhost:5000/api/admin/dashboard");
+    const { data } = await axios.get( `${import.meta.env.VITE_BASE_URL}api/admin/dashboard`);
     console.log("dashboard API response:", data); // 👀 check here
     if (data.success) {
   setDashBoardData({

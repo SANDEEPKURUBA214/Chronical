@@ -9,7 +9,7 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/admin/allusers");
+    const { data } = await axios.get( `${import.meta.env.VITE_BASE_URL}/api/admin/allusers`);
       if (data.success) {
         setUsers(data.users);
       } else {
