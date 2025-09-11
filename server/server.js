@@ -22,7 +22,7 @@ connectDB();
 // --------------------- CORS ---------------------
 // Allowed origins: local dev + multiple Vercel frontends
 const allowedOrigins = [
-  "https://chronical-gjy2.vercel.app/", // ✅ your actual Vercel frontend
+  "https://chronical-gjy2.vercel.app", // ✅ your actual Vercel frontend
   "http://localhost:5173" // optional for local dev
 ];
 
