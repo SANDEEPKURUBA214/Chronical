@@ -20,7 +20,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
               className="px-3 py-1 bg-blue-500 text-white rounded"
               onClick={async () => {
                 try {
-                  await axios.delete(`http://localhost:5000/api/admin/blogs/${blogId}`);
+                  await axios.delete(`/api/admin/blogs/${blogId}`);
                   toast.dismiss(t.id);
                   toast.success("Blog deleted!");
                   await fetchBlogs();

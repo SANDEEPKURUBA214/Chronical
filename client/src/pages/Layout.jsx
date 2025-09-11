@@ -2,16 +2,24 @@ import React from 'react'
 import { assets } from '../assets/assets';
 import {Outlet, useNavigate} from "react-router-dom"
 import Sidebar from '../components/Sidebar';
-
+import { useAppContext } from '../../context/AppContext';
+import { useEffect } from 'react';
 
 const Layout = () => {
-    const navigate = useNavigate()
-    const logout = async () => {
+  const { navigate } = useAppContext();
+  const { token, loading } = useAppContext();
 
+  useEffect(() => {
+    if (!loading && !token) {
       navigate("/login");
     }
+  }, [loading, token]);
 
-
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+  if (loading) return <div className="p-10">Loading...</div>;
 
   return (
     <>
@@ -29,6 +37,6 @@ const Layout = () => {
         </div>
     </>
   )
-}
 
+}
 export default Layout

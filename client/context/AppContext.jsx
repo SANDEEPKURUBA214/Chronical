@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -14,8 +15,7 @@ export const AppProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [blogs, setBlogs] = useState([]);
   const [input, setInput] = useState("");
-  const [user, setUser] = useState(null);   // logged-in user
-  const [admin, setAdmin] = useState(null); // separate admin info if needed
+  const [user, setUser] = useState(null); //will store { name, email, photo, role, ... }
 
   // Fetch blogs
   const fetchBlogs = async () => {
@@ -34,10 +34,12 @@ export const AppProvider = ({ children }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         withCredentials: true,
       });
-
       if (data.success) {
-        setUser(data.user);   // ✅ contains { role: "admin" | "user" }
-        setAdmin(data.admin); // ✅ keep admin separately
+        setUser(data.user);
+        // optional: store admin too if needed
+        if (data.admin) {
+          setUser((prev) => ({ ...prev, admin: data.admin }));
+        }
       } else {
         toast.error(data.message);
       }
@@ -46,6 +48,7 @@ export const AppProvider = ({ children }) => {
       toast.error("Failed to load user info");
     }
   };
+
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
@@ -62,6 +65,13 @@ export const AppProvider = ({ children }) => {
   }, []);
 
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    setUser(null);
+    delete axios.defaults.headers.common["Authorization"];
+    navigate("/login");
+  };
 
   const value = {
     axios,
@@ -72,18 +82,17 @@ export const AppProvider = ({ children }) => {
     setBlogs,
     input,
     setInput,
-    user,    // logged-in user
-    admin,   // separate admin object if needed
-    setUser,
-
-    loading,
+    user,      
+    setUser,   
+    logout
   };
 
+
   return (
-    <AppContext.Provider value={value}>
-      {children}
+    <AppContext.Provider value={{ axios, navigate, token, setToken, blogs, setBlogs, input, setInput, user, setUser }}>
+      {loading ? <div>Loading...</div> : children}
     </AppContext.Provider>
-  );
+  )
 };
 
 export const useAppContext = () => {

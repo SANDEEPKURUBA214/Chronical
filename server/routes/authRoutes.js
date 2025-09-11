@@ -78,12 +78,6 @@ router.get("/admins", getAdminUsers);
 router.post("/register", registerUser);
 router.post("/verify-otp", verifyOtp);
 router.post("/login", loginUser);
-// ✅ Logout route
-
-
-
-// POST /api/auth/logout
-
 
 export default router
 

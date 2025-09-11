@@ -139,7 +139,6 @@ const Blog = () => {
                   </p>
                 </div>
               </div>
-              
               {/* ✅ Show delete option if authorized */}
                 {user && (
                   (user.role === "admin" ||
