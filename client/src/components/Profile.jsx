@@ -9,7 +9,7 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/auth/profile");
+      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/profile`);
       if (data.success) {
         setProfile({
           ...data.user,
@@ -31,7 +31,7 @@ const Profile = () => {
       setUploading(true);
 
       // 1. Get signature from backend
-      const { data } = await axios.get("http://localhost:5000/api/auth/upload-signature");
+      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/upload-signature`);
 
       // 2. Upload to ImageKit
       const formData = new FormData();

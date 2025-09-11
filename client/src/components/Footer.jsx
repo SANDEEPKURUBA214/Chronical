@@ -14,7 +14,7 @@
 
      const fetchUsers = async () => {
          try {
-         const { data } = await axios.get("http://localhost:5000/api/auth/admins");
+         const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/admins`);
          if (data.success) {
              setUsers(data.users);
          } else {

@@ -20,7 +20,7 @@ export const AppProvider = ({ children }) => {
   // Fetch blogs
   const fetchBlogs = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/blog");
+      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/blog`);
       data.success ? setBlogs(data.blogs) : toast.error(data.message);
     } catch (error) {
       toast.error(error.message);
@@ -30,7 +30,7 @@ export const AppProvider = ({ children }) => {
   // Fetch user info if token exists
   const fetchUser = async () => {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/user/me", {
+      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/me`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         withCredentials: true,
       });
