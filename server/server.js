@@ -1,44 +1,56 @@
-import express from "express"
-import 'dotenv/config';
+// server.js
+import express from "express";
+import "dotenv/config";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./configs/DB.js";
 import authRoutes from "./routes/authRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-
-
 import path from "path";
 import { fileURLToPath } from "url";
 
-// __dirname replacement in ESM
+// __dirname replacement for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Connect to MongoDB
 connectDB();
 
-// middleware
+// --------------------- CORS ---------------------
+// Allowed origins: local dev + multiple Vercel frontends
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : [
+      "chronical-roan.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000"
+      
+,
+    ];
 
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg = `CORS policy does not allow access from ${origin}`;
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+  })
+);
 
-
-const allowedOrigins = [
-  // "http://localhost:5173",           // Vite dev server
-  // "http://localhost:3000",  
-  "https://chronical-two.vercel.app" // ✅ your Vercel domain
-];
-
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}));
-
-
-
+// ------------------- Middleware -------------------
 app.use(express.json());
 app.use(cookieParser());
 
-// routes
+// -------------------- Routes --------------------
 app.get("/", (req, res) => {
   res.send("API is working");
 });
@@ -46,13 +58,14 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/blog", blogRouter);
 app.use("/api/admin", adminRoutes);
-app.use("/api/user", authRoutes); // 👈 mount user routes
-app.use("/api/upload", authRoutes);
+app.use("/api/user", authRoutes); // optional
+app.use("/api/upload", authRoutes); // optional
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// -------------------- Start Server --------------------
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`server is Running on PORT ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
 export default app;
