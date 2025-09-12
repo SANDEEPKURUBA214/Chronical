@@ -1,99 +1,49 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../src/utils/axios.js";
+
 import toast from "react-hot-toast";
-
-// Set base URL from .env
-API.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-
+import API from './../src/utils/axios.js';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
-  const [input, setInput] = useState("");
-  const [user, setUser] = useState(null);   // logged-in user
-  const [admin, setAdmin] = useState(null); // separate admin info if needed
 
-  // Fetch blogs
-  const fetchBlogs = async () => {
+  const fetchUser = async () => {
     try {
-      const { data } = await API.get("/blog/");
-      data.success ? setBlogs(data.blogs) : toast.error(data.message);
-    } catch (error) {
-      toast.error(error.message);
+      const { data } = await API.get("/auth/me");
+      if (data.success) setUser(data.user);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Fetch user info if token exists
-  const fetchUser = async () => {
+  const fetchBlogs = async () => {
     try {
-      const { data } = await API.get("/auth/me", {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        withCredentials: true,
-      });
-
-      if (data.success) {
-        setUser(data.user);   // ✅ contains { role: "admin" | "user" }
-        setAdmin(data.admin); // ✅ keep admin separately
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load user info");
+      const { data } = await API.get("/blog/");
+      if (data.success) setBlogs(data.blogs);
+    } catch (err) {
+      toast.error(err.message);
     }
   };
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-
-    if (savedToken) {
-      setToken(savedToken);
-      API.defaults.headers.common["Authorization"] = `Bearer ${savedToken}`;
-      fetchUser().finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-
+    fetchUser();
     fetchBlogs();
   }, []);
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
+  const logout = async () => {
+    await API.post("/auth/logout");
     setUser(null);
-    setAdmin(null);
-    delete axios.defaults.headers.common["Authorization"];
     navigate("/login");
   };
 
-  const value = {
-    API,
-    navigate,
-    token,
-    setToken,
-    blogs,
-    setBlogs,
-    input,
-    setInput,
-    user,    // logged-in user
-    admin,   // separate admin object if needed
-    setUser,
-    logout,
-    loading,
-  };
-
-  return (
-    <AppContext.Provider value={value}>
-      {children}
-    </AppContext.Provider>
-  );
+  return <AppContext.Provider value={{ user, blogs, setUser, fetchBlogs, logout, loading }}>{children}</AppContext.Provider>;
 };
 
-export const useAppContext = () => {
-  return useContext(AppContext);
-};
+export const useAppContext = () => useContext(AppContext);
