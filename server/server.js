@@ -30,7 +30,7 @@ app.use(cookieParser());
 const allowedOrigins = [
   "https://chronical-gjy2.vercel.app", // ✅ your actual Vercel frontend
   "http://localhost:5173", // optional for local dev
-  "http://localhost:5174" // optional for local dev
+   // optional for local dev
 ];
 
 app.use(
