@@ -72,6 +72,7 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
+//Login
 // LOGIN
 export const login = async (req, res) => {
   try {
@@ -91,22 +92,22 @@ export const login = async (req, res) => {
       expiresIn: "7d",
     });
 
-    // Clear old cookie first
-    res.clearCookie("token", {
+    // ✅ Cookie options
+    const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-    });
+      secure: process.env.NODE_ENV === "production", // true on Render
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // allow cross-site cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    };
+
+    // Clear old cookie
+    res.clearCookie("token", cookieOptions);
 
     // Set new cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    res.cookie("token", token, cookieOptions);
 
     res.status(200).json({
+      success: true,
       message: "Login successful",
       user: { id: user._id, name: user.name, email: user.email, role: user.role },
     });
@@ -114,6 +115,8 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 // LOGOUT
 export const logout = (req, res) => {
