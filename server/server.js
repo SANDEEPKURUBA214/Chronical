@@ -47,6 +47,11 @@ app.use(
   })
 );
 
+app.get("/", (req, res) => {
+  res.send("Backend is live ✅");
+});
+
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
