@@ -1,8 +1,10 @@
-import AboveFooter from "../components/AboveFooter";
+
 import Navbar from './../components/Navbar';
 import Header from './../components/Header';
 import BlogList from './../components/BlogList';
 import Footer from './../components/Footer';
+import Addon from './../components/Addon';
+
 
 
 const Home = () => {
@@ -11,7 +13,7 @@ const Home = () => {
       <Navbar/>
       <Header />
       <BlogList />
-      <AboveFooter />  {/* ✅ Correct usage */}
+      <Addon/>
       <Footer />
     </div>
   );

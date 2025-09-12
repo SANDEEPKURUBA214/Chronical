@@ -1,7 +1,8 @@
-// AboveFooter.jsx
+
 import React from 'react';
 
-const AboveFooter = () => {
+
+const Addon = () => {
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-2 my-32">
       <h1 className="md:text-4xl text-2xl font-semibold">
@@ -15,4 +16,4 @@ const AboveFooter = () => {
   );
 };
 
-export default AboveFooter;
+export default Addon;
