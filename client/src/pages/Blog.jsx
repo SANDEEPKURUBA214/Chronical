@@ -46,7 +46,6 @@ const Blog = () => {
   }
 };
 
-
   const addComment = async (e) => {
   e.preventDefault();
   try {
@@ -84,12 +83,12 @@ const Blog = () => {
   };
 
 
-
-
   useEffect(()=>{
     fetchBlogData()
     fetchComments()
   },[])
+
+
 
   return data ? (
 
@@ -191,3 +190,4 @@ const Blog = () => {
 }
 
 export default Blog
+
