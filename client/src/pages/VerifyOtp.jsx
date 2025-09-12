@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import axios from "axios";
+import API from "../utils/axios.js";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useNotification } from "../utils/Notification";
 
@@ -40,7 +40,7 @@ export default function VerifyOtp() {
     }
     try {
       setLoading(true);
-      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/verify-otp`,{email, otp: finalOtp });
+      await API.post(`/auth/verify-otp`,{email, code: finalOtp });
       showNotification("Account verified successfully! Please login.");
       navigate("/login");
     } catch (err) {

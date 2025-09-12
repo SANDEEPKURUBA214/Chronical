@@ -5,16 +5,16 @@
  import toast from "react-hot-toast";
  import UserCard from "../components/UserCard"
  import { useEffect } from 'react';
-
+import API from "../utils/axios.js"
 
 
  const Footer = () => {
-     const { axios } = useAppContext();
+
      const [users, setUsers] = useState([]);
 
      const fetchUsers = async () => {
          try {
-         const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/admins`);
+         const { data } = await API.get(`/auth/admins`);
          if (data.success) {
              setUsers(data.users);
          } else {

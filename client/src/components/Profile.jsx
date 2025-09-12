@@ -1,15 +1,16 @@
 import {React, useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
+import API from "../utils/axios.js";
 
 const Profile = () => {
-  const { axios } = useAppContext();
+
   const [profile, setProfile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const fetchProfile = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/profile`);
+      const { data } = await API.get('/auth/profile');
       if (data.success) {
         setProfile({
           ...data.user,
@@ -31,7 +32,7 @@ const Profile = () => {
       setUploading(true);
 
       // 1. Get signature from backend
-      const { data } = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/auth/upload-signature`);
+      const { data } = await API.get(`/auth/upload-signature`);
 
       // 2. Upload to ImageKit
       const formData = new FormData();

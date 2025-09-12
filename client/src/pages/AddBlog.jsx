@@ -6,10 +6,11 @@ import { useRef } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 import {parse} from 'marked'
+import API from '../utils/axios.js';
 
 const AddBlog = () => {
 
-    const {axios} = useAppContext()
+
     const [isAdding,setIsAdding] = useState(false)
     const [loading,setLoading] = useState(false)
 
@@ -26,7 +27,7 @@ const AddBlog = () => {
         if(!title) return toast.error('Please Enter the title to Generate')
         try{
           setLoading(true)
-          const {data} = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/blog/generate`,{prompt:title})
+          const {data} = await API.post(`/blog/generate`,{prompt:title})
           if(data.success){
             quillRef.current.root.innerHTML = parse(data.content)
           }else{
@@ -71,7 +72,7 @@ const AddBlog = () => {
           const formData = new FormData();
           formData.append("blog", JSON.stringify(blog));
           formData.append("image", image);
-          const { data } = await axios.post( `${import.meta.env.VITE_BASE_URL}/api/blog/addblog`, formData, {
+          const { data } = await API.post( `/blog/addblog`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${localStorage.getItem("token")}`,

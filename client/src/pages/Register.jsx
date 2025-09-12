@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import API from "../utils/axios.js";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../utils/Notification";
 
@@ -14,21 +14,18 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      setLoading(true);
-      await axios.post( `${import.meta.env.VITE_BASE_URL}/api/auth/register`, {
-        name,
-        email,
-        password,
-        role: "user", // default role
-      });
+      await API.post("/auth/register", { name, email, password });
       showNotification("OTP sent to email. Please verify.");
       navigate("/verify-otp", { state: { email } });
     } catch (err) {
       showNotification(err.response?.data?.message || "Registration failed", "error");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">

@@ -72,11 +72,13 @@ export const getAllBlogs = async (req,res)=>{
   }
 }
 
-  export const getBlogById = async (req, res) => {
+// GET /api/blog/:id
+export const getBlogById = async (req, res) => {
   try {
     const { id } = req.params;
     const blog = await Blog.findById(id)
-      .populate("user", "name photo role"); //  get publisher info
+      .populate("user", "_id name photo role");  // ✅ include _id
+
     if (!blog) {
       return res.json({ success: false, message: "Blog not found" });
     }
@@ -135,17 +137,20 @@ export const addComment = async (req, res) => {
 };
 
 // GET /api/blog/comments/:blogId
+// GET /api/blog/comments/:blogId
 export const getBlogComments = async (req, res) => {
   try {
-    const { blogId } = req.params;  // correct param
+    const { blogId } = req.params;
     const comments = await Comment.find({ blog: blogId })
-      .populate("user", "name photo")  // show user name + photo
-      .sort({ createdAt: -1 });        // newest first
+      .populate("user", "_id name photo")   // ✅ include _id for ownership check
+      .sort({ createdAt: -1 });
+
     res.json({ success: true, comments });
   } catch (error) {
     res.json({ success: false, message: error.message });
   }
 };
+
 
 export const getAllBlogsAdminUser = async (req, res) => {
   try {
@@ -235,7 +240,43 @@ export const togglePublish = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+{/*
+export const deleteCommentById = async (req, res) => {
+  try {
+    const { id } = req.body;
 
+    const comment = await Comment.findById(id);
+    if (!comment) {
+      return res.status(404).json({ success: false, message: "Comment not found" });
+    }
+
+    // Admin can delete any comment
+    if (req.user.role === "admin") {
+      await comment.deleteOne();
+      return res.json({ success: true, message: "Comment deleted successfully" });
+    }
+
+    // User can delete their own comment
+    if (comment.user.toString() === req.user._id.toString()) {
+      await comment.deleteOne();
+      return res.json({ success: true, message: "Comment deleted successfully" });
+    }
+
+    // Blog owner can delete comments on their own blog
+    const blog = await Blog.findById(comment.blog);
+    if (blog && blog.user.toString() === req.user._id.toString()) {
+      await comment.deleteOne();
+      return res.json({ success: true, message: "Comment deleted successfully" });
+    }
+    console.log("req.user:", req.user._id, req.user.role);
+
+    return res.status(403).json({ success: false, message: "Not authorized to delete this comment" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+*/}
 
 export const deleteCommentById = async (req, res) => {
   try {
@@ -271,8 +312,10 @@ export const deleteCommentById = async (req, res) => {
   }
 };
 
-export const generateContent = async (req, res) => {
-  try {
+
+
+export const generate = async (req, res) => {
+  try { 
     const { prompt } = req.body;
     if (!prompt) {
       return res.status(400).json({ success: false, message: "Prompt is required" });

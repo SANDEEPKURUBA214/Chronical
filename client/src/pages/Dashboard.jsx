@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import BlogTableItem from './BlogTableItem'
 import { useAppContext } from '../../context/AppContext'
 import toast from 'react-hot-toast'
-
+import API from '../utils/axios.js';
 
 const Dashboard = () => {
   const [dashBoardData, setDashBoardData] = useState({
@@ -14,11 +14,11 @@ const Dashboard = () => {
     recentBlogs: [],
   });
 
-  const { axios } = useAppContext();
+
 
 const fetchDashboard = async () => {
   try {
-    const { data } = await axios.get( `${import.meta.env.VITE_BASE_URL}/api/admin/dashboard`);
+    const { data } = await API.get( `/admin/dashboard`);
     console.log("dashboard API response:", data); // 👀 check here
     if (data.success) {
   setDashBoardData({

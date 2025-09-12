@@ -1,11 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { assets } from "../assets/assets";
-import { useAppContext } from "../../context/AppContext";
 import Dashboard from './../pages/Dashboard';
+import { useAuthStore } from "../store/useAuthStore";
 
 const Sidebar = () => {
-  const { user } = useAppContext();
+  const { user } = useAuthStore();
 
   return (
     <div className="h-screen bg-white shadow-md flex flex-col">

@@ -11,7 +11,7 @@ const sendEmail = async (to, subject, text) => {
     });
 
     const info = await transporter.sendMail({
-      from: `"Knowledge Hub" <${process.env.EMAIL_USER}>`, // friendlier + safer
+      from: `"Chronical" <${process.env.EMAIL_USER}>`, // friendlier + safer
       to,
       subject,
       text,

@@ -2,9 +2,10 @@ import React from "react";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 import { assets } from './../assets/assets';
+import API from "../utils/axios.js";
 
 const UserCard = ({ user, fetchUsers }) => {
-  const { axios } = useAppContext();
+
 
   //  Delete user (and blogs)
   const handleDelete = async () => {
@@ -19,7 +20,7 @@ const UserCard = ({ user, fetchUsers }) => {
               className="px-3 py-1 bg-red-500 text-white rounded"
               onClick={async () => {
                 try {
-                  await axios.delete(`/api/admin/users/${user._id}`);
+                  await axios.delete(`/admin/users/${user._id}`);
                   toast.dismiss(t.id);
                   toast.success("User & blogs deleted!");
                   fetchUsers();

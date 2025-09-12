@@ -3,11 +3,14 @@ import { useAppContext } from "../../context/AppContext";
 import { assets } from "../assets/assets";
 import toast from "react-hot-toast";
 import React from "react";
+import { useAuthStore } from "../store/useAuthStore";
+import API from '../utils/axios.js';
 
 const BlogTableItem = ({ blog, fetchBlogs, index }) => {
   const { title, createdAt } = blog;
   const BlogDate = new Date(createdAt);
-  const { axios, user } = useAppContext(); // get logged-in user
+
+  const {user} = useAuthStore()
   const navigate = useNavigate();
 
   const deleteBlog = (blogId) => {
@@ -20,7 +23,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
               className="px-3 py-1 bg-blue-500 text-white rounded"
               onClick={async () => {
                 try {
-                  await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/admin/blogs/${blogId}`);
+                  await API.delete(`/admin/blogs/${blogId}`);
                   toast.dismiss(t.id);
                   toast.success("Blog deleted!");
                   await fetchBlogs();
@@ -46,7 +49,7 @@ const BlogTableItem = ({ blog, fetchBlogs, index }) => {
 
   const togglePublish = async () => {
     try {
-      const { data } = await axios.post( `${import.meta.env.VITE_BASE_URL}/api/admin/toggle-publish`, {
+      const { data } = await API.post( `/admin/toggle-publish`, {
         id: blog._id,
       });
       if (data.success) {

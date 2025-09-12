@@ -3,8 +3,9 @@ import { useAppContext } from '../../context/AppContext'
 import { useAuthStore } from '../store/useAuthStore.js';
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../utils/Notification";
-import axios from 'axios';
+import API from '../utils/axios.js';
 import CircularProgress from '@mui/material/CircularProgress';
+import toast from 'react-hot-toast';
 
 
 export default function Login() {
@@ -15,27 +16,28 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { Notification, showNotification } = useNotification();
 
+  
   const handleSubmit = async (e) => {
-      e.preventDefault();   // prevent form reload
-      try {
-        setLoading(true);
-        const res = await axios.post(
-           `${import.meta.env.VITE_BASE_URL}/api/auth/login`,
-          { email, password },
-          { withCredentials: true }
-        );
-        login(res.data);
-        if (res.data.token) {
-            localStorage.setItem("token", res.data.token);
-        }
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await API.post("/auth/login", { email, password });
 
-        showNotification("Login successful!", "success");
-        navigate("/home");
-      } catch (err) {
-        showNotification(err.response?.data?.message || "Login failed", "error");
-      }
+      // ✅ store only the user
+      login(res.data.user);
+
+      // Double-check with backend
+      // const me = await API.get("auth/me");
+      // login(me.data.user);
+
+      toast.success("Login successful!");
+      navigate("/home");
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Login failed");
+    } finally {
       setLoading(false);
-    };
+    }
+  };
 
 
   if (loading) return <CircularProgress sx={{ mt: 10 }} />;
@@ -71,9 +73,13 @@ export default function Login() {
           </form>
         <p className="mt-4 text-center text-gray-600">
           Don't have an account?{" "}
-          <a href="/register" className="rounded-full text-indigo-600 hover:underline">
-            Register
-          </a>
+        <a
+          href="/register"
+          className="rounded-full text-indigo-600 hover:underline"
+        >
+          Register
+        </a>
+
         </p>
         </div>
         <Notification/>

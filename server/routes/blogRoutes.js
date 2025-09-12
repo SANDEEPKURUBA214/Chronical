@@ -1,8 +1,8 @@
 import express from "express";
 import { 
   addBlog, 
-  addComment, 
-  generateContent, 
+  addComment,  
+  generate,  
   getAllBlogs, 
   getBlogById, 
   getBlogComments 
@@ -19,7 +19,7 @@ blogRouter.get("/comments/:blogId", getBlogComments);
 blogRouter.get("/blog/:id", getBlogById);
 
 //gemini
-blogRouter.post("/generate",protect, generateContent);
+blogRouter.post("/generate",protect, generate);
 
 
 // Requires login

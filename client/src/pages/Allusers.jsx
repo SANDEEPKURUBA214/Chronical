@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
 import UserCard from "../components/UserCard";
+import API from '../utils/axios.js';
 
 const AllUsers = () => {
-  const { axios } = useAppContext();
+
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
     try {
-    const { data } = await axios.get( `${import.meta.env.VITE_BASE_URL}/api/admin/allusers`);
+    const { data } = await API.get( `/admin/allusers`);
       if (data.success) {
         setUsers(data.users);
       } else {

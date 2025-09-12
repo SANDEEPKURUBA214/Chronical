@@ -1,22 +1,20 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
-import Header from '../components/Header'
-import BlogList from '../components/BlogList'
-import Newsletter from '../components/Subscription'
-import Subscription from '../components/Subscription'
-import Footer from '../components/Footer'
+import AboveFooter from "../components/AboveFooter";
+import Navbar from './../components/Navbar';
+import Header from './../components/Header';
+import BlogList from './../components/BlogList';
+import Footer from './../components/Footer';
 
 
-const Home= ()=>{
+const Home = () => {
   return (
-      <div>
-          <Navbar/>
-          <Header/>
-          <BlogList/>
-          <Subscription/>
-          <Footer/>
-      </div>
-    )
-}
+    <div>
+      <Navbar/>
+      <Header />
+      <BlogList />
+      <AboveFooter />  {/* ✅ Correct usage */}
+      <Footer />
+    </div>
+  );
+};
 
-export default Home
+export default Home;

@@ -1,20 +1,21 @@
+
 import React, { useEffect } from 'react'
 import {useParams} from "react-router-dom"
-import { assets } from './../assets/assets';
+import { assets} from './../assets/assets';
 import { useState } from 'react';
 import Navbar from './../components/Navbar';
 import  Moment from "moment"
 import Loader from '../components/Loader';
-import { useAppContext } from '../../context/AppContext';
 import toast from 'react-hot-toast';
 import BlogImage from './../components/BlogImage';
-
+import { useAuthStore } from '../store/useAuthStore';
+import API from '../utils/axios.js';
 
 const Blog = () => {
 
   const {id}= useParams()
 
-  const {axios,user} = useAppContext()
+  const {user} = useAuthStore()
 
   const [data, setData] = useState(null)
   const [comments, setComments] = useState([])
@@ -22,7 +23,7 @@ const Blog = () => {
 
   const fetchBlogData = async ()=>{
     try{
-      const {data} = await axios.get( `${import.meta.env.VITE_BASE_URL}/api/blog/blog/${id}`)
+      const {data} = await API.get(`/blog/blog/${id}`)
 
       data.success ? setData(data.blog) : toast.error(data.message)
       // console.log("Fetched comments:", data.comments);
@@ -34,7 +35,7 @@ const Blog = () => {
 
   const fetchComments = async () => {
   try {
-    const { data } = await axios.get( `${import.meta.env.VITE_BASE_URL}/blog/comments/${id}`);
+    const { data } = await API.get(`/blog/comments/${id}`);
     if (data.success) {
       setComments(data.comments); // 👈 make sure this is called
     } else {
@@ -49,7 +50,7 @@ const Blog = () => {
   const addComment = async (e) => {
   e.preventDefault();
   try {
-    const { data } = await axios.post( `${import.meta.env.VITE_BASE_URL}/api/blog/comments`, {
+    const { data } = await API.post("/blog/comments", {
       blogId: id,
       content,
     });
@@ -67,7 +68,7 @@ const Blog = () => {
 
   const handleDelete = async (commentId) => {
     try {
-      const { data } = await await axios.delete( `${import.meta.env.VITE_BASE_URL}/api/admin/delete-comment`, {
+      const { data } = await API.delete("/admin/delete-comment", {
           data: { id: commentId }
         });
 
@@ -151,8 +152,11 @@ const Blog = () => {
                     >
                       Delete
                     </button>
+              
                   )
                 )}
+
+                
             </div>
           ))}
         </div>

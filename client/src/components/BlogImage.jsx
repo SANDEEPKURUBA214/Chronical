@@ -1,7 +1,6 @@
 import { IKImage, IKContext } from "imagekitio-react";
 
-const urlEndpoint = "https://ik.imagekit.io/tony3000";
-
+const urlEndpoint = import.meta.env.VITE_IMAGEKIT_URL_ENDPOINT;
 
 export default function BlogImage({ path, className = "" }) {
   const isFullUrl = path.startsWith("http");
@@ -15,7 +14,7 @@ export default function BlogImage({ path, className = "" }) {
     );
   }
   return (
-    <IKContext urlEndpoint="https://ik.imagekit.io/tony3000">
+    <IKContext urlEndpoint={urlEndpoint}>
       <IKImage
         path={path}
         transformation={[{ height: 400, width: 800, crop: "at_max" }]}

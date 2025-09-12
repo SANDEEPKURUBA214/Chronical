@@ -1,111 +1,192 @@
 
 import User from "../models/user.js";
-import PendingVerification from "../models/PendingVerification.js";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import sendEmail from '../utils/sendEmails.js';
 import Otp from "../models/otpModel.js"
-import generateToken from "../utils/generateToken.js"
+import jwt from "jsonwebtoken";
 
-console.log("generateToken:", generateToken);
+import imagekit from "../configs/imageKit.js";
 
 
-export const registerUser = async (req, res) => {
+
+
+// Generate OTP
+function generateOtp() {
+  return crypto.randomInt(100000, 999999).toString();
+}
+
+// REGISTER: store data in OTP collection
+export const register = async (req, res) => {
   try {
-    const { name, email, password, role = "user" } = req.body;
-    // check if user already exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "Email already registered" });
-    }
-    // hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // generate OTP
-    const otp = crypto.randomInt(100000, 999999).toString();
-    // save OTP in DB (overwrite if exists for same email)
-    await Otp.findOneAndUpdate(
-      { email },
-      { otp },
-      { upsert: true, new: true }
-    );
-    // temporarily save user data in req (alternative: store in a staging table)
-    req.app.locals.tempUser = {
-      [email]: { name, email, password: hashedPassword, role },
-    };
-    // send OTP email
-    await sendEmail(email, "Verify your account", `Your OTP is ${otp}`);
+    const { name, email, password } = req.body;
 
-    res.status(200).json({ message: "OTP sent to email. Please verify." });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: "Email already registered" });
+
+    await Otp.deleteMany({ email }); // cleanup old OTP
+
+    const code = generateOtp();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await Otp.create({ name, email, password, code, expiresAt });
+
+    await sendEmail(
+      email,
+      "Verify your Email for Chronical",
+      `Your OTP code is: ${code}. It expires in 10 minutes.`
+    );
+
+    res.status(201).json({ message: "OTP sent to email. Please verify." });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-// Verify OTP
+// VERIFY OTP: create user
 export const verifyOtp = async (req, res) => {
   try {
-    const { email, otp } = req.body;
+    const { email, code } = req.body;
+    const otpRecord = await Otp.findOne({ email, code });
 
-    // check OTP in DB
-    const record = await Otp.findOne({ email });
-    if (!record) {
-      return res.status(400).json({ message: "No OTP found or expired. Please register again." });
+    if (!otpRecord) return res.status(400).json({ message: "Invalid OTP" });
+    if (otpRecord.expiresAt < new Date()) {
+      return res.status(400).json({ message: "OTP expired" });
     }
 
-    if (record.otp !== otp) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
+    const user = await User.create({
+      name: otpRecord.name,
+      email: otpRecord.email,
+      password: otpRecord.password, // hashed in schema
+      isVerified: true,
+    });
 
-    // OTP matches → create user
-    const tempUser = req.app.locals.tempUser?.[email];
-    if (!tempUser) {
-      return res.status(400).json({ message: "User data missing. Please register again." });
-    }
+    await Otp.deleteMany({ email });
 
-    const { name, password, role } = tempUser;
-    const user = await User.create({ name, email, password, role, isVerified: true });
-
-
-    await Otp.deleteOne({ email });
-    delete req.app.locals.tempUser[email];
-
-    res.status(201).json({ message: "Account verified successfully! Please login.", user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.json({
+      message: "Account verified successfully",
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
-
-export const loginUser = async (req, res) => {
+// LOGIN
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
 
-    if (!user) {
-      return res.status(401).json({ message: "user not found" });
-    }
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
     if (!user.isVerified) {
-      return res.status(403).json({ message: "Please verify your email before login" });
+      return res.status(403).json({ message: "Please verify your email before logging in" });
     }
-    //  Debug logs
-    if (await user.matchPassword(password)) {
-      const token = generateToken(user._id, user.role);
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        token,
-        message: "Login successful",
-      });
-    } else {
-      res.status(401).json({ message: "Invalid email or password" });
+
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    // Clear old cookie first
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
+    // Set new cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// LOGOUT
+export const logout = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
+
+// Utility to pick safe user fields
+const formatUser = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  photo: user.photo,
+  isVerified: user.isVerified,
+});
+
+// -------------------- Check Auth --------------------
+export const checkAuth = async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Not authorized" });
+  res.status(200).json(formatUser(req.user));
+};
+
+// -------------------- Get ImageKit Upload Signature --------------------
+export const getUploadSignature = (req, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Not authorized" });
+
+    const authParams = imagekit.getAuthenticationParameters();
+    res.json({ success: true, ...authParams });
+  } catch (err) {
+    console.error("getUploadSignature error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// -------------------- Update Profile Photo --------------------
+export const updateProfilePhoto = async (req, res) => {
+  try {
+    if (!req.user) return res.status(401).json({ message: "Not authorized" });
+    const { photo } = req.body;
+
+    if (!photo) {
+      return res.status(400).json({ success: false, message: "Photo URL required" });
     }
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+
+    // Optional: validate URL format
+    if (!/^https?:\/\/.+/.test(photo)) {
+      return res.status(400).json({ success: false, message: "Invalid photo URL" });
     }
-  };
+
+    req.user.photo = photo;
+    await req.user.save();
+
+    res.json({ success: true, message: "Profile photo updated!", user: formatUser(req.user) });
+  } catch (error) {
+    console.error("updateProfilePhoto error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// -------------------- Get Profile --------------------
+export const getProfile = async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Not authorized" });
+  res.json({ success: true, user: formatUser(req.user) });
+};
+
+
 
 export const getAdminUsers = async (req, res) => {
   try {
@@ -116,6 +197,3 @@ export const getAdminUsers = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
-
-

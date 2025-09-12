@@ -1,6 +1,7 @@
-import React from 'react'
+// AboveFooter.jsx
+import React from 'react';
 
-const Subscription = () => {
+const AboveFooter = () => {
   return (
     <div className="flex flex-col items-center justify-center text-center space-y-2 my-32">
       <h1 className="md:text-4xl text-2xl font-semibold">
@@ -11,8 +12,7 @@ const Subscription = () => {
       </p>
       <p>Just Generate and Post Your Blog</p>
     </div>
-  )
-}
+  );
+};
 
-export default Subscription
-
+export default AboveFooter;
