@@ -286,25 +286,33 @@ export const deleteCommentById = async (req, res) => {
     if (!comment) {
       return res.status(404).json({ success: false, message: "Comment not found" });
     }
+    if (req.user.role === "admin" ||
+    comment.user.toString() === req.user._id.toString() ||
+    Blog.user.toString() === req.user._id.toString()) {
+    await comment.deleteOne();
+    return res.json({ success: true, message: "Comment deleted successfully" });
+}
 
-    // Admin can delete any comment
-    if (req.user.role === "admin") {
-      await comment.deleteOne();
-      return res.json({ success: true, message: "Comment deleted successfully" });
-    }
 
-    //  User can delete their own comment
-    if (comment.user.toString() === req.user._id.toString()) {
-      await comment.deleteOne();
-      return res.json({ success: true, message: "Comment deleted successfully" });
-    }
 
-    //  Publisher: can delete comments on their own blog
-    const blog = await Blog.findById(comment.blog);
-    if (blog && blog.user.toString() === req.user._id.toString() && req.user.role === "publisher") {
-      await comment.deleteOne();
-      return res.json({ success: true, message: "Comment deleted successfully" });
-    }
+    // // Admin can delete any comment
+    // if (req.user.role === "admin") {
+    //   await comment.deleteOne();
+    //   return res.json({ success: true, message: "Comment deleted successfully" });
+    // }
+
+    // //  User can delete their own comment
+    // if (comment.user.toString() === req.user._id.toString()) {
+    //   await comment.deleteOne();
+    //   return res.json({ success: true, message: "Comment deleted successfully" });
+    // }
+
+    // //  Publisher: can delete comments on their own blog
+    // const blog = await Blog.findById(comment.blog);
+    // if (blog && blog.user.toString() === req.user._id.toString() && req.user.role === "publisher") {
+    //   await comment.deleteOne();
+    //   return res.json({ success: true, message: "Comment deleted successfully" });
+    // }
 
     return res.status(403).json({ success: false, message: "Not authorized to delete this comment" });
   } catch (error) {
