@@ -4,7 +4,7 @@ A modern MERN-based blog platform with user authentication, admin moderation, an
 
 🚀 Live Demo
 
-    vercel: chronical-gjy2.vercel.app
+vercel: chronical-gjy2.vercel.app
 
 
 
@@ -13,27 +13,29 @@ A modern MERN-based blog platform with user authentication, admin moderation, an
 
 Register with OTP verification & login
 
-    Upload profile photo
-    
-    Create blogs with:
-    
-    Thumbnail upload
-    
-    AI-generated description (Gemini API)
-    
-    Comment on blogs
-    
-    Delete own blogs
-    
-    Blogs go for admin review before publishing
+Upload profile photo
+
+Create blogs with:
+
+Thumbnail upload
+
+AI-generated description (Gemini API)
+
+Comment on blogs
+
+Delete own blogs
+
+Blogs go for admin review before publishing
 
 🛠️ Admin
 
-    View all users
-    
-    Delete users, blogs, and comments
-    
-    Approve / unpublish blogs
+user features +
+
+View all users
+
+Delete users, blogs, and comments
+
+Approve / unpublish blogs
 
 ⚙️ Tech Stack
 
