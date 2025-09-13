@@ -4,73 +4,42 @@ import toast from "react-hot-toast";
 import API from "../utils/axios.js";
 
 const Profile = () => {
-
   const [profile, setProfile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   const fetchProfile = async () => {
     try {
-      const { data } = await API.get('/auth/profile');
-      if (data.success) {
-        setProfile({
-          ...data.user,
-          admin: data.admin || null,
-        });
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    try {
-      setUploading(true);
-
-      // 1. Get signature from backend
-      const { data } = await API.get(`/auth/upload-signature`);
-
-      // 2. Upload to ImageKit
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("fileName", file.name);
-      formData.append("publicKey", import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY);
-      formData.append("signature", data.signature);
-      formData.append("expire", data.expire);
-      formData.append("token", data.token);
-
-      const uploadRes = await fetch(
-        "https://upload.imagekit.io/api/v1/files/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const uploadData = await uploadRes.json();
-      if (!uploadData.url) throw new Error("Image upload failed");
-
-      // 3. Save URL to backend
-      await axios.put("/api/auth/profile-photo", { photo: uploadData.url });
-
-      toast.success("Profile photo updated!");
-
-      // 4. Update UI
-      setProfile((prev) => ({ ...prev, photo: uploadData.url }));
+      const { data } = await API.get("/auth/profile");
+      if (data.success) setProfile(data.user);
+      else toast.error(data.message);
     } catch (err) {
       toast.error(err.message);
-    } finally {
-      setUploading(false);
     }
   };
 
   useEffect(() => {
     fetchProfile();
   }, []);
+
+  const handleFileChange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const { data } = await API.put("/auth/profile-photo", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      setProfile((prev) => ({ ...prev, photo: data.photo }));
+      toast.success("Profile photo updated!");
+    };
+
+
 
   if (!profile) {
     return (
