@@ -117,6 +117,9 @@ const Blog = () => {
             <BlogImage path={data.image} className="rounded-lg max-w-4xl w-full" />
             <div className='rich-text max-w-3xl mx:auto' dangerouslySetInnerHTML={{__html:data.description}}></div>
       </div>
+              <div className="max-w-3xl mx-auto text-center py-5">
+              <p className="font-semibold mb-4">Thank You</p>
+              </div>
       {/*comment sectionn */}
         <div className="flex flex-col gap-4 max-w-lg mx-auto">
           <p className="font-semibold mb-4">comments({comments.length})</p>
@@ -181,9 +184,7 @@ const Blog = () => {
                 </button>
               </form>
             </div>
-              <div className="max-w-3xl mx-auto text-center py-5">
-              <p className="font-semibold mb-4">Thank You</p>
-              </div>
+              
 
             </div>
   ) : <Loader/>
