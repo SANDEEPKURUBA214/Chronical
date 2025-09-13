@@ -26,7 +26,7 @@ const AllUsers = () => {
   }, []);
 
   return (
-    <div className="flex items-start">
+    <div className="flex-grid">
         {users
         .filter((u)=> u.role!=="admin")
         .map((user) => (
