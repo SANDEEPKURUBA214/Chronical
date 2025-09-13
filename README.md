@@ -4,9 +4,9 @@ A modern MERN-based blog platform with user authentication, admin moderation, an
 
 🚀 Live Demo
 
-Frontend (Vercel): your-vercel-link
+    vercel: chronical-gjy2.vercel.app
 
-Backend (Render): your-render-link
+
 
 ✨ Features
 👤 Users
