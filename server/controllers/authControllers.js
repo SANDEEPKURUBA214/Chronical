@@ -180,6 +180,11 @@ export const updateProfilePhoto = async (req, res) => {
   }
 };
 
+export const getProfile = async (req, res) => {
+  if (!req.user) return res.status(401).json({ message: "Not authorized" });
+  res.json({ success: true, user: formatUser(req.user) });
+};
+
 
 export const getAdminUsers = async (req, res) => {
   try {
