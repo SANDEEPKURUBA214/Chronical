@@ -11,7 +11,7 @@ export const AppProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [blogs, setBlogs] = useState([]);
-
+  const [input, setInput] = useState("");
   const fetchUser = async () => {
     try {
       const { data } = await API.get("/auth/me");
@@ -43,7 +43,7 @@ export const AppProvider = ({ children }) => {
     navigate("/login");
   };
 
-  return <AppContext.Provider value={{ user, blogs, setUser, fetchBlogs, logout, loading }}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ user, blogs, setUser, fetchBlogs, logout, loading, input,setInput }}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => useContext(AppContext);
