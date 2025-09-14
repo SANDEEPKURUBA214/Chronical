@@ -6,6 +6,13 @@ A modern MERN-based blog platform with user authentication, admin moderation, an
 
   vercel: chronical-gjy2.vercel.app
 
+## 📸 Screenshots
+  ![verification Screenshot](./screenshots/1.png)
+  ![Home Screenshot](./screenshots/2.png)
+  ![Dashboard Screenshot](./screenshots/3.png)
+  ![Adding(Generating Screenshot](./screenshots/4.png)
+  ![Allusers Screenshot](./screenshots/5.png)
+
 
 ✨ Features
 
