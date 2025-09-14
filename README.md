@@ -17,19 +17,27 @@ ________________________________________________________________________________
 👤 Users:
 
   Register with OTP verification & login
+  
   Upload profile photo
+  
   Create blogs with:
+  
   Thumbnail upload
   AI-generated description (Gemini API)
+  
   Comment on blogs
+  
   Delete own blogs
+  
   Blogs go for admin review before publishing
 
-🛠️ Admin
-
+🛠️ Admin:
 user features +
+
 View all users
+
 Delete users, blogs, and comments
+
 Approve / unpublish blogs
 
 ____________________________________________________________________________________________________________________________________________________________________________________________________________________
