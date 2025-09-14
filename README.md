@@ -2,9 +2,7 @@ Chronical: 📝 A Blog Application (MERN Stack)
 
 A modern MERN-based blog platform with user authentication, admin moderation, and AI-powered blog description generation.
 
-🚀 Live Demo
-
-  vercel: [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-blue?style=for-the-badge&logo=vercel)](https://chronical-gjy2.vercel.app)
+🚀 Live Demo:  [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-blue?style=for-the-badge&logo=vercel)](https://chronical-gjy2.vercel.app)
 
 
 ## 📸 Screenshots
