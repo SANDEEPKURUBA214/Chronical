@@ -189,13 +189,15 @@ export const updateProfilePhoto = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 
 // -------------------- Get Profile --------------------
+=======
+>>>>>>> 77036a4d908633e512d0f478704b27ea7907bbdf
 export const getProfile = async (req, res) => {
   if (!req.user) return res.status(401).json({ message: "Not authorized" });
   res.json({ success: true, user: formatUser(req.user) });
 };
-
 
 
 export const getAdminUsers = async (req, res) => {

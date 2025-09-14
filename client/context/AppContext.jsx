@@ -43,7 +43,11 @@ export const AppProvider = ({ children }) => {
     navigate("/login");
   };
 
+<<<<<<< HEAD
   return <AppContext.Provider value={{ user, blogs, setUser, fetchBlogs, logout, loading, input, setInput }}>{children}</AppContext.Provider>;
+=======
+  return <AppContext.Provider value={{ user, blogs, setUser, fetchBlogs, logout, loading, input,setInput }}>{children}</AppContext.Provider>;
+>>>>>>> 77036a4d908633e512d0f478704b27ea7907bbdf
 };
 
 export const useAppContext = () => useContext(AppContext);

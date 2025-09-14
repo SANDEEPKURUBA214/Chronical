@@ -29,11 +29,11 @@ const Header = () => {
           className="inline-flex items-center justify-center gap-4 px-6 py-1.5
           mb-4 border border-primary/40 bg-primary/10 rounded-full text-sm text-primary"
         >
-          <p>NEW: AI feature integrated</p>
+          <p>Powered with GEMINI</p>
           <img src={assets.star_icon} className="w-2.5" alt="" />
         </div>
 
-        <h1 className="text-3xl sm:text-6xl ">
+        <h1 className="text-3xl sm:text-2xl ">
           Your Blogs, Your World, Your Chronical.
         </h1>
 
