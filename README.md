@@ -4,7 +4,8 @@ A modern MERN-based blog platform with user authentication, admin moderation, an
 
 🚀 Live Demo
 
-  vercel: chronical-gjy2.vercel.app
+  vercel: [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-blue?style=for-the-badge&logo=vercel)](https://chronical-gjy2.vercel.app)
+
 
 ## 📸 Screenshots
   ![verification Screenshot](./screenshots/1.png)
