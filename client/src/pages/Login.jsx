@@ -4,7 +4,6 @@ import { useAuthStore } from '../store/useAuthStore.js';
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "../utils/Notification";
 import API from '../utils/axios.js';
-import CircularProgress from '@mui/material/CircularProgress';
 import toast from 'react-hot-toast';
 
 
@@ -40,12 +39,12 @@ export default function Login() {
   };
 
 
-  if (loading) return <CircularProgress sx={{ mt: 10 }} />;
+
 
   return (
-    <div className='flex items-center justify-center h-screen'>
-      <div className='w-full max-w-sm p-6 max-md:m-6 border border-primary/30
-      shadow-xl show-primary/15 rounded-lg'>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+   
         <div className='flex flex-col items-center justify-center'>
           <div className='w-full py-6 text-center'>
               <h1 className='text-3xl font-bold'

@@ -20,7 +20,7 @@ const UserCard = ({ user, fetchUsers }) => {
               className="px-3 py-1 bg-red-500 text-white rounded"
               onClick={async () => {
                 try {
-                  await axios.delete(`/admin/users/${user._id}`);
+                  await API.delete(`/admin/users/${user._id}`);
                   toast.dismiss(t.id);
                   toast.success("User & blogs deleted!");
                   fetchUsers();

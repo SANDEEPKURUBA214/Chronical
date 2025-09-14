@@ -146,42 +146,49 @@ export const checkAuth = async (req, res) => {
 };
 
 // -------------------- Get ImageKit Upload Signature --------------------
+
 export const getUploadSignature = (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authorized" });
 
     const authParams = imagekit.getAuthenticationParameters();
-    res.json({ success: true, ...authParams });
+    res.json({
+      success: true,
+      signature: authParams.signature,
+      expire: authParams.expire,
+      token: authParams.token,
+    });
   } catch (err) {
     console.error("getUploadSignature error:", err);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
+
 // -------------------- Update Profile Photo --------------------
+
+
 export const updateProfilePhoto = async (req, res) => {
   try {
     if (!req.user) return res.status(401).json({ message: "Not authorized" });
-    const { photo } = req.body;
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
-    if (!photo) {
-      return res.status(400).json({ success: false, message: "Photo URL required" });
-    }
+    const uploadResponse = await imagekit.upload({
+      file: req.file.buffer,
+      fileName: req.file.originalname,
+      folder: "/profiles",
+    });
 
-    // Optional: validate URL format
-    if (!/^https?:\/\/.+/.test(photo)) {
-      return res.status(400).json({ success: false, message: "Invalid photo URL" });
-    }
-
-    req.user.photo = photo;
+    req.user.photo = uploadResponse.url;
     await req.user.save();
 
-    res.json({ success: true, message: "Profile photo updated!", user: formatUser(req.user) });
-  } catch (error) {
-    console.error("updateProfilePhoto error:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.json({ success: true, message: "Profile photo updated!", photo: uploadResponse.url });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Upload failed" });
   }
 };
+
 
 // -------------------- Get Profile --------------------
 export const getProfile = async (req, res) => {

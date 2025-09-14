@@ -46,7 +46,6 @@ const Blog = () => {
   }
 };
 
-
   const addComment = async (e) => {
   e.preventDefault();
   try {
@@ -84,12 +83,12 @@ const Blog = () => {
   };
 
 
-
-
   useEffect(()=>{
     fetchBlogData()
     fetchComments()
   },[])
+
+
 
   return data ? (
 
@@ -100,7 +99,7 @@ const Blog = () => {
 
       <div className='text-center mt-20 text-gray-600'>
         <p className='text-primary py-4 front-medium'>
-          Published on {Moment(data.createdAt).format('MMMM do YYYY')}</p>
+          Published on {Moment(data.createdAt).format('MMMM Do YYYY')}</p>
         <h1 className='text-2xl sm: text-5xl font-semibold max-w-2xl-auto
         text-shadow-gray-800'>{data.title}</h1>
         <h2 className='my-5 max-w-lg truncate mx-auto'>{data.subTitle}</h2>
