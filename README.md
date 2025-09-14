@@ -6,6 +6,12 @@ A modern MERN-based blog platform with user authentication, admin moderation, an
               [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-blue?style=for-the-badge&logo=vercel)](https://chronical-gjy2.vercel.app)
 
 
+⚙️ Tech Stack: 
+
+Frontend: React 19, Vite, TailwindCSS, Zustand, Quill, ImageKit
+Backend: Node.js, Express, MongoDB, JWT, Multer, Nodemailer, Gemini API
+
+
 ## 📸 Screenshots
   ![verification Screenshot](./screenshots/1.png)
   ![Home Screenshot](./screenshots/2.png)
@@ -34,9 +40,6 @@ View all users
 Delete users, blogs, and comments
 Approve / unpublish blogs
 
-⚙️ Tech Stack
-Frontend: React 19, Vite, TailwindCSS, Zustand, Quill, ImageKit
-Backend: Node.js, Express, MongoDB, JWT, Multer, Nodemailer, Gemini API
 
 
 ```
