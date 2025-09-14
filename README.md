@@ -11,15 +11,6 @@ Frontend: React 19, Vite, TailwindCSS, Zustand, Quill, ImageKit
 
 Backend: Node.js, Express, MongoDB, JWT, Multer, Nodemailer, Gemini API
 
-
-## 📸 Screenshots
-  ![verification Screenshot](./screenshots/1.png)
-  ![Home Screenshot](./screenshots/2.png)
-  ![Dashboard Screenshot](./screenshots/3.png)
-  ![Adding(Generating Screenshot](./screenshots/4.png)
-  ![Allusers Screenshot](./screenshots/5.png)
-
-
 ✨ Features
 
 👤 Users:
@@ -39,6 +30,17 @@ user features +
 View all users
 Delete users, blogs, and comments
 Approve / unpublish blogs
+
+
+
+## 📸 Screenshots
+  ![verification Screenshot](./screenshots/1.png)
+  ![Home Screenshot](./screenshots/2.png)
+  ![Dashboard Screenshot](./screenshots/3.png)
+  ![Adding(Generating Screenshot](./screenshots/4.png)
+  ![Allusers Screenshot](./screenshots/5.png)
+
+
 
 
 
